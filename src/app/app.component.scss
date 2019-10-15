@@ -1,0 +1,17 @@
+.scene {
+  position: relative;
+  height: 100vh;
+  width: 600px;
+  margin: auto;
+  //border-right: 1px solid tomato;
+  //border-left: 1px solid tomato;
+  overflow: hidden;
+}
+
+.wrapper {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background: url('/assets/imgs/space.jpg');
+}

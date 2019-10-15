@@ -1,0 +1,11 @@
+.spaceship {
+  width: 100px;
+  height: 100px;
+  background: url('http://www.pngmart.com/files/3/Spaceship-PNG-File.png');
+  background-size: cover;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: all .1s cubic-bezier(1, 1, 0, 0);
+  background-color: aquamarine;
+}

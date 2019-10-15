@@ -1,0 +1,20 @@
+.asteroid {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  width: 50px;
+  background: url('/assets/imgs/asteroid.png');
+  background-size: cover;
+  transition: all .25s cubic-bezier(1, 1, 0, 0);
+  background-color: tomato;
+}
+
+.asteroid--md {
+  height: 100px;
+  width: 100px;
+}
+
+.asteroid--lg {
+  height: 150px;
+  width: 150px;
+}
