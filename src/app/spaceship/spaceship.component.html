@@ -2,4 +2,9 @@
      [style.width]="spaceship.size + 'px'"
      [style.height]="spaceship.size + 'px'"
      [style.left]="spaceship.positionX + 'px'"
-     [style.bottom]="spaceship.positionY + 'px'" ></div>
+     [style.bottom]="spaceship.positionY + 'px'" >
+  <img class="spaceship__fire"
+       *ngIf="spaceship.isDamaged"
+       src="https://storage.googleapis.com/multi-static-content/previews/artage-io-thumb-f6e7f7656b189dfc0dcabe81e975555f.png">
+  <!--<img src="http://www.pngmart.com/files/3/Spaceship-PNG-File.png" alt="" class="spaceship__skin">-->
+</div>

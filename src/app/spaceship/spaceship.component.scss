@@ -1,11 +1,46 @@
 .spaceship {
   width: 100px;
-  height: 100px;
+  height: 80px;
   background: url('http://www.pngmart.com/files/3/Spaceship-PNG-File.png');
   background-size: cover;
   position: absolute;
   left: 0;
   bottom: 0;
-  transition: all .1s cubic-bezier(1, 1, 0, 0);
+  transition: all .05s cubic-bezier(1, 1, 0, 0);
   background-color: aquamarine;
 }
+
+.spaceship__fire {
+  width: 50px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 20px;
+  margin: auto;
+}
+
+//.spaceship--damaged {
+//  &:after {
+//    content: '';
+//    position: absolute;
+//    left: 0;
+//    top: 0;
+//    width: 60px;
+//    height: 60px;
+//    //background: url('/assets/imgs/fire.png');
+//    z-index: 99;
+//    background-image: url('');
+//    //background: red;
+//    //background-color: red;
+//  }
+//}
+
+//.spaceship__skin {
+//  width: 100px;
+//  height: 100px;
+//  position: absolute;
+//  right: 0;
+//  left: -15px;
+//  top: -30px;
+//  z-index: 9;
+//}

@@ -1,0 +1,56 @@
+.scene {
+  position: relative;
+  height: 100vh;
+  width: 600px;
+  margin: auto;
+  //border-right: 1px solid tomato;
+  //border-left: 1px solid tomato;
+}
+
+.wrapper {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background: url('/assets/imgs/space.jpg');
+}
+
+.game-over {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+}
+
+.game-over__title {
+  color: #fff;
+  text-transform: uppercase;
+  font-family: monospace;
+  font-size: 100px;
+  margin: 0;
+}
+
+.scene__asteroids {
+  height: 100%;
+  width: 70px;
+  position: absolute;
+  background-image: url('/assets/imgs/asteroids.png');
+  background-size: contain;
+  //opacity: .5;
+}
+
+.scene__asteroids--left-side {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+.scene__asteroids--right-side {
+  right: 0;
+  transform: translateX(100%);
+}
