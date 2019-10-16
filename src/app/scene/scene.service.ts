@@ -23,12 +23,12 @@ export class SceneService {
 
   constructor() {
     this.onResize();
-    window.addEventListener('focus', event => {
-      this.startGame();
-    });
-    window.addEventListener('blur', event => {
-      this.pauseGame();
-    });
+    // window.addEventListener('focus', event => {
+    //   this.startGame();
+    // });
+    // window.addEventListener('blur', event => {
+    //   this.pauseGame();
+    // });
   }
 
   getScreenHeight() {

@@ -9,6 +9,9 @@ import {AsteroidComponent} from "./asteroids-generator/asteroid/asteroid.compone
 import {SpaceshipService} from "./spaceship/spaceship.service";
 import {SceneComponent} from "./scene/scene.component";
 import {SceneService} from "./scene/scene.service";
+import {ScoreComponent} from "./scene/score/score.component";
+import {ScoreService} from "./scene/score/score.service";
+import {HomeComponent} from "./home/home.component";
 
 @NgModule({
   declarations: [
@@ -16,7 +19,9 @@ import {SceneService} from "./scene/scene.service";
     SpaceshipComponent,
     AsteroidsGeneratorComponent,
     AsteroidComponent,
-    SceneComponent
+    SceneComponent,
+    ScoreComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +29,8 @@ import {SceneService} from "./scene/scene.service";
   ],
   providers: [
     SpaceshipService,
-    SceneService
+    SceneService,
+    ScoreService
   ],
   bootstrap: [AppComponent]
 })

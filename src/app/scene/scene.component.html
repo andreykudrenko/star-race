@@ -1,13 +1,17 @@
 <div class="wrapper" [style.background-position-y]="bgPosition + 'px'">
+  <app-score></app-score>
+
   <div class="scene">
     <div class="scene__asteroids scene__asteroids--left-side" [style.background-position-y]="2 * bgPosition + 'px'"></div>
     <app-spaceship></app-spaceship>
     <app-asteroids-generator></app-asteroids-generator>
     <div class="scene__asteroids scene__asteroids--right-side" [style.background-position-y]="2 * bgPosition + 'px'"></div>
   </div>
-
   <div class="game-over" *ngIf="isGameOver">
-    <h2 class="game-over__title">Game over</h2>
+    <div class="game-over__content">
+      <h2 class="game-over__title">Game over</h2>
+      <p class="game-over__score">Your score: {{score}}</p>
+    </div>
   </div>
   <div class="game-over" *ngIf="isGamePause">
     <h2 class="game-over__title">Pause</h2>
