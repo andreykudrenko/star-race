@@ -3,9 +3,10 @@
     <div class="logo">Star <span class="logo__label">Race</span></div>
     <div class="home__menu">
       <ul class="menu">
-        <li class="menu__item"><a [routerLink]="['/game']" class="menu__link button button--opacity" href="#">New game</a></li>
-        <li class="menu__item"><a class="menu__link button button--opacity" href="#">Score table</a></li>
+        <li class="menu__item"><a [routerLink]="['/game']" class="menu__link button button--opacity" href="#">Play</a></li>
+        <!--<li class="menu__item"><a class="menu__link button button&#45;&#45;opacity" href="#">Score table</a></li>-->
       </ul>
+      <p class="best-score">Your best score: {{bestScore}}</p>
     </div>
   </div>
 </div>

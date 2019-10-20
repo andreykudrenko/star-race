@@ -13,6 +13,13 @@ import {ScoreComponent} from "./scene/score/score.component";
 import {ScoreService} from "./scene/score/score.service";
 import {HomeComponent} from "./main-menu/home/home.component";
 import {MainMenuComponent} from "./main-menu/main-menu.component";
+import {AuthComponent} from "./main-menu/auth/auth.component";
+import {AuthService} from "./main-menu/auth/auth.service";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {AuthInterceptorService} from "./main-menu/auth/auth-interceptor.service";
+import {AuthGuard} from "./main-menu/auth/auth.guard";
+import {ScoreResolverService} from "./scene/score/score-resolver.service";
 
 @NgModule({
   declarations: [
@@ -23,16 +30,24 @@ import {MainMenuComponent} from "./main-menu/main-menu.component";
     SceneComponent,
     ScoreComponent,
     HomeComponent,
-    MainMenuComponent
+    MainMenuComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
   ],
   providers: [
     SpaceshipService,
     SceneService,
     ScoreService,
+    AuthService,
+    AuthGuard,
+    ScoreResolverService,
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent]
 })

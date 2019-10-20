@@ -26,6 +26,13 @@
   animation: bg-rotation 170s infinite linear;
 }
 
+.main-menu__logout {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 99;
+}
+
 @keyframes bg-rotation {
   0% {
     transform: rotate(0) scale(1.5);

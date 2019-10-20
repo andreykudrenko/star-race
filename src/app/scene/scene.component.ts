@@ -67,7 +67,12 @@ export class SceneComponent implements OnInit, OnDestroy {
   gameOver() {
     this.stopGame();
     this.isGameOver = true;
+    const bestScore = this.scoreService.getBestScore();
     this.score = this.scoreService.getScore();
+    if (this.score > bestScore) {
+      this.scoreService.saveScore().subscribe(resp => {
+      });
+    }
   }
 
   ngOnDestroy() {

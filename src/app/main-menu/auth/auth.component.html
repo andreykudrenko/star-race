@@ -1,0 +1,26 @@
+<div class="auth">
+  <div class="auth__content">
+    <div class="logo">Star <span class="logo__label">Race</span></div>
+    <form class="auth__form" [formGroup]="authForm" (ngSubmit)="onSubmit()">
+      <p class="auth__form-msg">Please, Login or Sign up</p>
+      <div class="auth__form-field">
+        <label class="auth__form-label">E-mail</label>
+        <input type="text" class="auth__form-input" formControlName="email">
+        <div class="error-msg" *ngIf="authForm.controls['email'].invalid && authForm.controls['email'].touched">
+          <p class="error-msg__text">Please, enter valid e-mail</p>
+        </div>
+      </div>
+      <div class="auth__form-field">
+        <label class="auth__form-label">Password</label>
+        <input type="password" class="auth__form-input" formControlName="password">
+        <div class="error-msg" *ngIf="authForm.controls['password'].invalid && authForm.controls['password'].touched">
+          <p class="error-msg__text">"Password is required field"</p>
+        </div>
+      </div>
+      <div class="auth__form-btns">
+        <button type="submit" class="auth__form-btn button">{{isLoginMode ? 'Login' : 'Sign Up'}}</button>
+        <button type="button" (click)="onSwitchMode()" class="auth__form-btn button button-link">to {{isLoginMode ? 'Sign Up' : 'Login'}}</button>
+      </div>
+    </form>
+  </div>
+</div>

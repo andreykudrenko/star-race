@@ -26,5 +26,14 @@
   opacity: .5;
 }
 
+.button-link {
+  border: none;
+  color: #fff;
+  &:hover {
+    background: transparent;
+    color: #fff;
+  }
+}
+
 
 

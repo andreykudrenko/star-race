@@ -2,5 +2,8 @@
   <div class="main-menu__bg">
     <img class="main-menu__bg-img" src="/assets/imgs/main-bg.jpg">
   </div>
+  <button *ngIf="isAuth" type="button"
+          (click)="onLogout()"
+          class="main-menu__logout button">Logout</button>
   <router-outlet></router-outlet>
 </div>
