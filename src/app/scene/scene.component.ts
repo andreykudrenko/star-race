@@ -13,52 +13,65 @@ export class SceneComponent implements OnInit, OnDestroy {
   interval: any;
   gameStatusSub: Subscription;
   isGameOver = false;
-  isGamePause = false;
   score: number = 0;
+  isTutorialShown = true;
 
   constructor(private sceneService: SceneService, private scoreService: ScoreService) {}
 
   ngOnInit() {
-    this.startMoveBg();
     this.gameStatusSub = this.sceneService.gameStatusChanges.subscribe((status: GameStatus) => {
-      this.checkStatus(status);
+      this.checkStatusGame(status);
     });
   }
 
-  checkStatus(status: GameStatus) {
+  checkStatusGame(status: GameStatus) {
     switch (status) {
-      case GameStatus.Over:
-        this.isGameOver = true;
-        this.isGamePause = false;
-        this.stopMoveBg();
-        this.score = this.scoreService.getScore();
-        break;
-      case GameStatus.Pause:
-        this.isGameOver = false;
-        this.isGamePause = true;
-        this.stopMoveBg();
-        break;
       case GameStatus.Run:
-        this.isGameOver = false;
-        this.isGamePause = false;
-        this.startMoveBg();
+        this.runGame();
         break;
-      default: return;
+      case GameStatus.Stop:
+        this.stopGame();
+        break;
+      case GameStatus.GameOver:
+        this.gameOver();
+        break;
+      default:
+        this.stopGame();
     }
   }
 
-  startMoveBg() {
+  onStartGame() {
+      this.isTutorialShown = false;
+      this.sceneService.startGame();
+  }
+
+  onRestartGame() {
+    this.sceneService.restartGame();
+    this.bgPosition = 0;
+    this.score = 0;
+    this.scoreService.setScore(0);
+  }
+
+  runGame() {
+    this.isGameOver = false;
     this.interval = setInterval(() => {
       this.bgPosition += 1;
       this.scoreService.setScore(this.bgPosition);
-    },50);
+      },50);
   }
 
-  stopMoveBg() {
+  stopGame() {
     clearInterval(this.interval);
   }
 
+  gameOver() {
+    this.stopGame();
+    this.isGameOver = true;
+    this.score = this.scoreService.getScore();
+  }
+
   ngOnDestroy() {
+    this.scoreService.setScore(0);
     this.gameStatusSub.unsubscribe();
   }
 }

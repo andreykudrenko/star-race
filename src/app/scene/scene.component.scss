@@ -31,7 +31,6 @@
 .game-over__title {
   color: #fff;
   text-transform: uppercase;
-  font-family: monospace;
   font-size: 100px;
   margin: 0;
 }
@@ -39,7 +38,6 @@
 .game-over__score {
   margin: 0;
   color: #fff;
-  font-family: monospace;
   font-size: 40px;
   text-align: center;
 }
@@ -61,4 +59,71 @@
 .scene__asteroids--right-side {
   right: 0;
   transform: translateX(100%);
+}
+
+.tutorial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9;
+  background: rgba(0,0,0,.7);
+}
+
+.tutorial__msg {
+  font-size: 36px;
+  color: #fff;
+}
+
+.tutorial__label {
+  color: tomato;
+}
+
+.tutorials__key {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 3px solid #fff;
+  color: #fff;
+  font-size: 26px;
+  padding: 15px;
+  margin: auto;
+  text-transform: uppercase;
+}
+
+.tutorials__key-outer {
+  padding: 5px;
+  &:first-child {
+    width: 100%;
+  }
+}
+
+.tutorials__keyboard {
+  width: 260px;
+  margin: auto;
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tutorial__button {
+  margin: auto;
+  margin-top: 50px;
+}
+
+.game-over__menu {
+  width: 360px;
+  margin: auto;
+  padding-top: 40px;
+}
+
+.game-over__menu-item {
+  padding-bottom: 20px;
+  &:last-child {
+    padding-bottom: 0;
+  }
 }

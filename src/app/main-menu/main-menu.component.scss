@@ -1,0 +1,46 @@
+.main-menu {
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+  background-image: url("/assets/imgs/main-bg.jpg");
+  background-size: cover;
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.6);
+  }
+}
+
+.main-menu__bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.main-menu__bg-img {
+  width: 100%;
+  animation: bg-rotation 170s infinite linear;
+}
+
+@keyframes bg-rotation {
+  0% {
+    transform: rotate(0) scale(1.5);
+  }
+  50% {
+    transform: rotate(180deg) scale(2);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.5);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .main-menu__bg {
+    display: none;
+  }
+}
+

@@ -2,3 +2,29 @@
 * {
   font-family: 'Titillium Web', sans-serif;
 }
+
+.button {
+  display: block;
+  border: 3px solid #fff;
+  padding: 10px 30px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 30px;
+  text-transform: uppercase;
+  transition: all .3s;
+  cursor: pointer;
+  text-align: center;
+  &:hover {
+    transform: scale(1.05);
+    opacity: 1;
+    background: #fff;
+    color: #000;
+  }
+}
+
+.button--opacity {
+  opacity: .5;
+}
+
+
+

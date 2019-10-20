@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {GameStatus, SceneService} from "../scene/scene.service";
+import {GameStatus, SceneService} from "../scene.service";
 
 @Component({
   selector: 'app-asteroids-generator',
@@ -14,14 +14,16 @@ export class AsteroidsGeneratorComponent implements OnInit {
   constructor(private sceneService: SceneService) {}
 
   ngOnInit() {
-    this.startGenerateAsteroids();
     this.sceneService.gameStatusChanges.subscribe(status => {
-      if (status === GameStatus.Pause || status === GameStatus.Over) {
-        this.stopGenerateAsteroids();
-      } else {
+      if (status === GameStatus.Run) {
         this.startGenerateAsteroids();
+      } else {
+        this.stopGenerateAsteroids();
       }
     });
+    this.sceneService.gameRestart.subscribe(() => {
+      this.asteroids = [];
+    })
   }
 
   startGenerateAsteroids() {

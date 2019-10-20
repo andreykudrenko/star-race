@@ -1,19 +1,41 @@
 <div class="wrapper" [style.background-position-y]="bgPosition + 'px'">
   <app-score></app-score>
-
   <div class="scene">
     <div class="scene__asteroids scene__asteroids--left-side" [style.background-position-y]="2 * bgPosition + 'px'"></div>
     <app-spaceship></app-spaceship>
     <app-asteroids-generator></app-asteroids-generator>
     <div class="scene__asteroids scene__asteroids--right-side" [style.background-position-y]="2 * bgPosition + 'px'"></div>
   </div>
+
   <div class="game-over" *ngIf="isGameOver">
     <div class="game-over__content">
       <h2 class="game-over__title">Game over</h2>
       <p class="game-over__score">Your score: {{score}}</p>
+      <ul class="game-over__menu">
+        <li class="game-over__menu-item"><a (click)="onRestartGame()" class="game-over__menu-link button">Try again</a></li>
+        <li class="game-over__menu-item"><a [routerLink]="['/home']" class="game-over__menu-link button">Back to home</a></li>
+      </ul>
     </div>
   </div>
-  <div class="game-over" *ngIf="isGamePause">
-    <h2 class="game-over__title">Pause</h2>
+  <div class="tutorial" *ngIf="isTutorialShown">
+    <div class="tutorial__content">
+      <p class="tutorial__msg">To control the <span class="tutorial__label">Spaceship</span> use: </p>
+      <div class="tutorials__keyboard">
+        <div class="tutorials__key-outer">
+          <div class="tutorials__key">W</div>
+        </div>
+        <div class="tutorials__key-outer">
+          <div class="tutorials__key">A</div>
+        </div>
+        <div class="tutorials__key-outer">
+          <div class="tutorials__key">S</div>
+        </div>
+        <div class="tutorials__key-outer">
+          <div class="tutorials__key">d</div>
+        </div>
+      </div>
+
+      <button type="button" class="button tutorial__button" (click)="onStartGame()">Start</button>
+    </div>
   </div>
 </div>
