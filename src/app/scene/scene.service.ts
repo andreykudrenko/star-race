@@ -50,40 +50,4 @@ export class SceneService {
     this.gameStatusChanges.next(GameStatus.Run);
     this.gameRestart.next();
   }
-
-
-
-
-
-
-
-
-
-  // getGameStatus() {
-  //   return this.gameStatus;
-  // }
-  //
-  // getScreenHeight() {
-  //   return this.screenHeight;
-  // }
-  //
-  // gameOver() {
-  //   this.gameStatusChanges.next(GameStatus.Over);
-  //   this.gameStatus = GameStatus.Over;
-  //   this.isGameOver = true;
-  // }
-  //
-  // pauseGame() {
-  //   if (!this.isGameOver) {
-  //     this.gameStatusChanges.next(GameStatus.Pause);
-  //     this.gameStatus = GameStatus.Pause;
-  //   }
-  // }
-  //
-  // startGame() {
-  //   if (!this.isGameOver) {
-  //     this.gameStatusChanges.next(GameStatus.Run);
-  //     this.gameStatus = GameStatus.Run;
-  //   }
-  // }
 }
