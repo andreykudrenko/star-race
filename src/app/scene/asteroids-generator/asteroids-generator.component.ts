@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {GameStatus, SceneService} from "../scene.service";
 import {interval, Subscription} from "rxjs";
+import {AsteroidService} from "./asteroid.service";
 
 interface AsteroidEl {
   id: number;
@@ -16,7 +17,10 @@ export class AsteroidsGeneratorComponent implements OnInit {
   index: number = 0;
   intervalGeneratationSub: Subscription;
 
-  constructor(private sceneService: SceneService) {}
+  constructor(
+    private sceneService: SceneService,
+    private asteroidService: AsteroidService
+  ) {}
 
   ngOnInit() {
     this.sceneService.gameStatusChanges.subscribe(status => {
@@ -28,6 +32,9 @@ export class AsteroidsGeneratorComponent implements OnInit {
     });
     this.sceneService.gameRestart.subscribe(() => {
       this.asteroids = [];
+    });
+    this.asteroidService.deleteAsteroidEvent.subscribe((id: number) => {
+      this.deleteAsteroid(id);
     })
   }
 
@@ -43,7 +50,7 @@ export class AsteroidsGeneratorComponent implements OnInit {
     this.intervalGeneratationSub.unsubscribe();
   }
 
-  onDeleteAsteroid(id) {
+  deleteAsteroid(id) {
     this.asteroids = this.asteroids.reduce((acc, asteroid) => {
       if (asteroid.id !== id) {
         acc.push(asteroid);

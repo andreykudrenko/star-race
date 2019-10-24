@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {SpaceshipService} from "../../spaceship/spaceship.service";
 import {Asteroid} from "./asteroid.model";
 import {Spaceship} from "../../spaceship/spaceship.model";
@@ -6,13 +6,8 @@ import {GameStatus, Scene, SceneService} from "../../scene.service";
 import {interval, Subscription} from "rxjs";
 import {BlasterService} from "../../spaceship/blaster/blaster.service";
 import {Blaster} from "../../spaceship/blaster/blaster.model";
-
-interface ElementPosition {
-  fromX: number;
-  toX: number;
-  fromY: number;
-  toY: number;
-}
+import {PhysicsService} from "../../physics.service";
+import {AsteroidService} from "../asteroid.service";
 
 export interface Coords {
   x: number;
@@ -24,30 +19,28 @@ export interface Coords {
   templateUrl: './asteroid.component.html',
   styleUrls: ['./asteroid.component.scss']
 })
-export class AsteroidComponent implements OnInit {
-  @Output() deleteAsteroid = new EventEmitter();
+export class AsteroidComponent implements OnInit, OnDestroy {
   @Input() id;
   scene: Scene;
-  asteroid: Asteroid;
-  spaceship: Spaceship;
-  intervalMotionSub: Subscription;
+  asteroid: Asteroid = {
+    id: this.id,
+    positionX: 0,
+    positionY: 0,
+    size: 0
+  };
   startPos: Coords;
-  blastersPos: Blaster[] = [];
+  intervalMotionSub: Subscription;
+  sceneSub: Subscription;
 
   constructor(
-    private spaceshipService: SpaceshipService,
+    private asteroidService: AsteroidService,
     private sceneService: SceneService,
-    private blasterService: BlasterService,
+    private physicsService: PhysicsService,
   ) {}
 
   ngOnInit() {
     this.scene = this.sceneService.getSceneSize();
-    this.spaceship = this.spaceshipService.getSpaceship();
-    this.blastersPos = this.blasterService.getBlasters();
-    this.blasterService.blasterChangesEvent.subscribe(blaster => {
-      this.blastersPos = blaster;
-    });
-    this.sceneService.gameStatusChanges.subscribe(status => {
+    this.sceneSub = this.sceneService.gameStatusChanges.subscribe(status => {
       if (status === GameStatus.Run) {
         this.startAsteroid();
       } else {
@@ -57,11 +50,16 @@ export class AsteroidComponent implements OnInit {
     this.initAsteroid();
   }
 
+  ngOnDestroy() {
+    this.stopAsteroid();
+    this.sceneSub.unsubscribe();
+  }
+
   initAsteroid() {
     const sizeLevel = this.randomMinMaxInteger(2,4);
     this.startPos = this.getAsteroidPosition();
     const size = sizeLevel * 15;
-    this.asteroid = new Asteroid(this.startPos.x, this.startPos.y, size);
+    this.asteroid = new Asteroid(this.id, this.startPos.x, this.startPos.y, size);
     this.startAsteroid();
   }
 
@@ -74,12 +72,13 @@ export class AsteroidComponent implements OnInit {
       this.asteroid.positionX += moveCoord.x;
       this.asteroid.positionY += moveCoord.y;
 
-      this.checkIfAsteroidHitsSpaceship();
+      this.physicsService.checkIfAsteroidHitsSpaceship(this.asteroid);
+
       if (this.asteroid.positionY < -200
       || this.asteroid.positionY > this.scene.height + 200
       || this.asteroid.positionX > this.scene.width + 200
       || this.asteroid.positionX < -200) {
-        this.deleteAsteroid.emit(this.id);
+        this.asteroidService.deleteAsteroid(this.id);
         this.stopAsteroid();
       }
     });
@@ -178,78 +177,5 @@ export class AsteroidComponent implements OnInit {
         };
       default: break;
     }
-  }
-
-  checkIfAsteroidHitsSpaceship() {
-    const spaceshipBodyCoords: ElementPosition = {
-      fromX: this.spaceship.positionX,
-      toX: this.spaceship.positionX + this.spaceship.size - 28,
-      fromY: this.spaceship.positionY + 36,
-      toY: this.spaceship.positionY + 64
-    };
-
-    const spaceshipWingsCoords: ElementPosition = {
-      fromX: this.spaceship.positionX + 15,
-      toX: this.spaceship.positionX + 30,
-      fromY: this.spaceship.positionY,
-      toY: this.spaceship.positionY + this.spaceship.size
-    };
-
-    const spaceshipBowCoords: ElementPosition = {
-      fromX: this.spaceship.positionX + this.spaceship.size - 28,
-      toX: this.spaceship.positionX + this.spaceship.size,
-      fromY: this.spaceship.positionY + 45,
-      toY: this.spaceship.positionY + 55
-    };
-
-    const asteroidCoords: ElementPosition = {
-      fromX: this.asteroid.positionX,
-      toX: this.asteroid.positionX + this.asteroid.size,
-      fromY: this.scene.height - this.asteroid.positionY,
-      toY: this.scene.height - this.asteroid.positionY - this.asteroid.size
-    };
-
-    if (this.blastersPos && this.blastersPos.length > 0) {
-      this.blastersPos.forEach((blaster: Blaster) => {
-        const blasterCoords: ElementPosition = {
-          fromX: blaster.x,
-          toX: blaster.x + 10,
-          fromY: blaster.y,
-          toY: blaster.y - 2
-        };
-        if (this.checkIntersectionOfElements(blasterCoords, asteroidCoords)) {
-          this.deleteAsteroid.emit(this.id);
-          this.stopAsteroid();
-          this.blasterService.deleteBlaster(blaster.id);
-          this.blastersPos = this.blasterService.getBlasters();
-        }
-      });
-    }
-
-    if (
-      (this.checkIntersectionOfElements(spaceshipBodyCoords, asteroidCoords)
-        || this.checkIntersectionOfElements(spaceshipWingsCoords, asteroidCoords)
-        || this.checkIntersectionOfElements(spaceshipBowCoords, asteroidCoords))
-      && this.spaceship.isDamaged === false) {
-      this.spaceshipService.setDamage();
-    }
-  }
-
-  checkIntersectionOfElements(firstEl: ElementPosition, secondEl: ElementPosition): boolean {
-      return (
-        (
-          (firstEl.fromX < secondEl.fromX && firstEl.toX > secondEl.fromX)
-          || (firstEl.fromX < secondEl.toX && firstEl.toX > secondEl.toX)
-          || (firstEl.fromX > secondEl.fromX && firstEl.fromX < secondEl.toX)
-          || (firstEl.toX > secondEl.fromX && firstEl.toX < secondEl.toX)
-        )
-        &&
-        (
-          (firstEl.toY < secondEl.fromY && firstEl.toY > secondEl.toY)
-          || (firstEl.fromY > secondEl.fromY && firstEl.toY < secondEl.toY)
-          || (firstEl.fromY < secondEl.fromY && firstEl.fromY >secondEl.toY)
-          || (firstEl.fromY < secondEl.fromY && firstEl.toY > secondEl.toY)
-        )
-      )
   }
 }

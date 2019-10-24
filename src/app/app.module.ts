@@ -22,6 +22,8 @@ import {AuthGuard} from "./main-menu/auth/auth.guard";
 import {ScoreResolverService} from "./scene/score/score-resolver.service";
 import {BlasterComponent} from "./scene/spaceship/blaster/blaster.component";
 import {BlasterService} from "./scene/spaceship/blaster/blaster.service";
+import {PhysicsService} from "./scene/physics.service";
+import {AsteroidService} from "./scene/asteroids-generator/asteroid.service";
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import {BlasterService} from "./scene/spaceship/blaster/blaster.service";
     AuthGuard,
     ScoreResolverService,
     BlasterService,
+    PhysicsService,
+    AsteroidService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent]

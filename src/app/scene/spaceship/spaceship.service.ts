@@ -1,5 +1,6 @@
 import {Spaceship} from "./spaceship.model";
 import {SceneService} from "../scene.service";
+import {Coords} from "../asteroids-generator/asteroid/asteroid.component";
 
 export class SpaceshipService {
   spaceship: Spaceship;
@@ -17,5 +18,20 @@ export class SpaceshipService {
 
   getSpaceship() {
     return this.spaceship;
+  }
+
+  getSpaceshipCoords(): Coords {
+    return {
+      x: this.spaceship.positionX,
+      y: this.spaceship.positionY,
+    }
+  }
+
+  getSpaceshipSize(): number {
+    return this.spaceship.size;
+  }
+
+  getSpaceshipStatus(): boolean {
+    return this.spaceship.isDamaged;
   }
 }
