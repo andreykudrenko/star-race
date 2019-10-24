@@ -1,14 +1,22 @@
-import {Component, EventEmitter, OnInit, Output} from "@angular/core";
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SpaceshipService} from "../../spaceship/spaceship.service";
 import {Asteroid} from "./asteroid.model";
 import {Spaceship} from "../../spaceship/spaceship.model";
 import {GameStatus, Scene, SceneService} from "../../scene.service";
+import {interval, Subscription} from "rxjs";
+import {BlasterService} from "../../spaceship/blaster/blaster.service";
+import {Blaster} from "../../spaceship/blaster/blaster.model";
 
 interface ElementPosition {
   fromX: number;
   toX: number;
   fromY: number;
   toY: number;
+}
+
+export interface Coords {
+  x: number;
+  y: number;
 }
 
 @Component({
@@ -18,20 +26,27 @@ interface ElementPosition {
 })
 export class AsteroidComponent implements OnInit {
   @Output() deleteAsteroid = new EventEmitter();
+  @Input() id;
   scene: Scene;
   asteroid: Asteroid;
   spaceship: Spaceship;
-  interval: any;
+  intervalMotionSub: Subscription;
+  startPos: Coords;
+  blastersPos: Blaster[] = [];
 
   constructor(
     private spaceshipService: SpaceshipService,
-    private sceneService: SceneService
+    private sceneService: SceneService,
+    private blasterService: BlasterService,
   ) {}
 
   ngOnInit() {
-    this.initAsteroid();
     this.scene = this.sceneService.getSceneSize();
     this.spaceship = this.spaceshipService.getSpaceship();
+    this.blastersPos = this.blasterService.getBlasters();
+    this.blasterService.blasterChangesEvent.subscribe(blaster => {
+      this.blastersPos = blaster;
+    });
     this.sceneService.gameStatusChanges.subscribe(status => {
       if (status === GameStatus.Run) {
         this.startAsteroid();
@@ -39,52 +54,152 @@ export class AsteroidComponent implements OnInit {
         this.stopAsteroid();
       }
     });
-    this.sceneService.gameRestart.subscribe(() => this.initAsteroid());
+    this.initAsteroid();
   }
 
   initAsteroid() {
-    const startPos = -100;
-    const size = 30;
-    const initPositionX = 550 * Math.random();
-    this.asteroid = new Asteroid(initPositionX, startPos, size);
+    const sizeLevel = this.randomMinMaxInteger(2,4);
+    this.startPos = this.getAsteroidPosition();
+    const size = sizeLevel * 15;
+    this.asteroid = new Asteroid(this.startPos.x, this.startPos.y, size);
     this.startAsteroid();
   }
 
   startAsteroid() {
-    this.interval = setInterval(() => {
-      this.asteroid.positionY += 1;
+    const speedLevel = this.randomMinMaxInteger(1,4);
+    const intervalMotion = interval(speedLevel * 5);
+    const moveCoord: Coords = this.generateAsteroidSpawnPlace();
+
+    this.intervalMotionSub = intervalMotion.subscribe(() => {
+      this.asteroid.positionX += moveCoord.x;
+      this.asteroid.positionY += moveCoord.y;
+
       this.checkIfAsteroidHitsSpaceship();
-      if (this.scene.height - this.asteroid.positionY < -this.asteroid.size) {
-        this.deleteAsteroid.emit();
+      if (this.asteroid.positionY < -200
+      || this.asteroid.positionY > this.scene.height + 200
+      || this.asteroid.positionX > this.scene.width + 200
+      || this.asteroid.positionX < -200) {
+        this.deleteAsteroid.emit(this.id);
         this.stopAsteroid();
       }
-    }, 10);
+    });
   }
 
   stopAsteroid() {
-    clearInterval(this.interval);
+    this.intervalMotionSub.unsubscribe();
+  }
+
+  generateAsteroidSpawnPlace(): Coords {
+    let moveX;
+    let moveY;
+
+    if ((this.startPos.x < this.scene.width / 3)
+      && (this.startPos.y < this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(1,2);
+      moveY = this.randomMinMaxInteger(0,1);
+    }
+
+    if ((this.startPos.x > this.scene.width / 3)
+      && (this.startPos.x < 2 * this.scene.width / 3)
+      && (this.startPos.y < this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(-1,1);
+      moveY = this.randomMinMaxInteger(0,1);
+    }
+
+    if ((this.startPos.x > 2 * this.scene.width / 3)
+      && (this.startPos.y < this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(-2, -1);
+      moveY = this.randomMinMaxInteger(0,1);
+    }
+
+    if ((this.startPos.x < this.scene.width / 3)
+      && (this.startPos.y < 2 * this.scene.height / 3)
+      && (this.startPos.y > this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(1,2);
+      moveY = this.randomMinMaxInteger(-1,1);
+    }
+
+    if ((this.startPos.x > 2 * this.scene.width / 3)
+      && (this.startPos.y < 2 * this.scene.height / 3)
+      && (this.startPos.y > this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(-2, -1);
+      moveY = this.randomMinMaxInteger(-1,1);
+    }
+
+    if ((this.startPos.x < this.scene.width / 3)
+      && (this.startPos.y > 2 * this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(1,2);
+      moveY = this.randomMinMaxInteger(-1,0);
+    }
+
+    if ((this.startPos.x > this.scene.width / 3)
+      && (this.startPos.x < 2 * this.scene.width / 3)
+      && (this.startPos.y > 2 * this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(-1,1);
+      moveY = this.randomMinMaxInteger(-1, 0);
+    }
+
+    if ((this.startPos.x > 2 * this.scene.width / 3)
+      && (this.startPos.y > 2 * this.scene.height / 3)) {
+      moveX = this.randomMinMaxInteger(-2, -1);
+      moveY = this.randomMinMaxInteger(-1,0);
+    }
+
+    return {x: moveX, y: moveY};
+  }
+
+  private randomMinMaxInteger(min, max) {
+    let rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
+  }
+
+  private getAsteroidPosition(): Coords {
+    const side = this.randomMinMaxInteger(1,4);
+    switch (side) {
+      case 1:
+        return {
+          x: this.scene.width + 100,
+          y: this.randomMinMaxInteger(50, this.scene.height - 50)
+        };
+      case 2:
+        return {
+          x: - 100,
+          y: this.randomMinMaxInteger(50, this.scene.height - 50)
+        };
+      case 3:
+        return {
+          x: this.randomMinMaxInteger(50, this.scene.width - 50),
+          y: this.scene.height + 100
+        };
+      case 4:
+        return {
+          x: this.randomMinMaxInteger(50, this.scene.width - 50),
+          y: - 100
+        };
+      default: break;
+    }
   }
 
   checkIfAsteroidHitsSpaceship() {
     const spaceshipBodyCoords: ElementPosition = {
-      fromX: this.spaceship.positionX + 36,
-      toX: this.spaceship.positionX + 64,
-      fromY: this.spaceship.positionY + this.spaceship.size - 28,
-      toY: this.spaceship.positionY
+      fromX: this.spaceship.positionX,
+      toX: this.spaceship.positionX + this.spaceship.size - 28,
+      fromY: this.spaceship.positionY + 36,
+      toY: this.spaceship.positionY + 64
     };
 
     const spaceshipWingsCoords: ElementPosition = {
-      fromX: this.spaceship.positionX,
-      toX: this.spaceship.positionX + this.spaceship.size,
-      fromY: this.spaceship.positionY + 30,
-      toY: this.spaceship.positionY + 15
+      fromX: this.spaceship.positionX + 15,
+      toX: this.spaceship.positionX + 30,
+      fromY: this.spaceship.positionY,
+      toY: this.spaceship.positionY + this.spaceship.size
     };
 
     const spaceshipBowCoords: ElementPosition = {
-      fromX: this.spaceship.positionX + 45,
-      toX: this.spaceship.positionX + 55,
-      fromY: this.spaceship.positionY + this.spaceship.size,
-      toY: this.spaceship.positionY + this.spaceship.size - 28
+      fromX: this.spaceship.positionX + this.spaceship.size - 28,
+      toX: this.spaceship.positionX + this.spaceship.size,
+      fromY: this.spaceship.positionY + 45,
+      toY: this.spaceship.positionY + 55
     };
 
     const asteroidCoords: ElementPosition = {
@@ -93,6 +208,23 @@ export class AsteroidComponent implements OnInit {
       fromY: this.scene.height - this.asteroid.positionY,
       toY: this.scene.height - this.asteroid.positionY - this.asteroid.size
     };
+
+    if (this.blastersPos && this.blastersPos.length > 0) {
+      this.blastersPos.forEach((blaster: Blaster) => {
+        const blasterCoords: ElementPosition = {
+          fromX: blaster.x,
+          toX: blaster.x + 10,
+          fromY: blaster.y,
+          toY: blaster.y - 2
+        };
+        if (this.checkIntersectionOfElements(blasterCoords, asteroidCoords)) {
+          this.deleteAsteroid.emit(this.id);
+          this.stopAsteroid();
+          this.blasterService.deleteBlaster(blaster.id);
+          this.blastersPos = this.blasterService.getBlasters();
+        }
+      });
+    }
 
     if (
       (this.checkIntersectionOfElements(spaceshipBodyCoords, asteroidCoords)

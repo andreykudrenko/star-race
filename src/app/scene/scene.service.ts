@@ -21,7 +21,7 @@ export class SceneService {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.scene = {
-      width: 600,
+      width: window.innerWidth,
       height: window.innerHeight
     };
   }

@@ -1,5 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {GameStatus, SceneService} from "../scene.service";
+import {interval, Subscription} from "rxjs";
+
+interface AsteroidEl {
+  id: number;
+}
 
 @Component({
   selector: 'app-asteroids-generator',
@@ -7,9 +12,9 @@ import {GameStatus, SceneService} from "../scene.service";
   styleUrls: ['./asteroids-generator.component.scss']
 })
 export class AsteroidsGeneratorComponent implements OnInit {
-  asteroids: number[] = [];
+  asteroids: AsteroidEl[] = [];
   index: number = 0;
-  interval: any;
+  intervalGeneratationSub: Subscription;
 
   constructor(private sceneService: SceneService) {}
 
@@ -27,17 +32,23 @@ export class AsteroidsGeneratorComponent implements OnInit {
   }
 
   startGenerateAsteroids() {
-    this.interval = setInterval(() => {
+    const intervalGeneratation = interval(750);
+    this.intervalGeneratationSub = intervalGeneratation.subscribe(() => {
       this.index += 1;
-      this.asteroids.push(this.index);
-    }, 2000);
+      this.asteroids.push({id: this.index});
+    });
   }
 
   stopGenerateAsteroids() {
-    clearInterval(this.interval);
+    this.intervalGeneratationSub.unsubscribe();
   }
 
-  onDeleteAsteroid() {
-    this.asteroids.splice(0,1);
+  onDeleteAsteroid(id) {
+    this.asteroids = this.asteroids.reduce((acc, asteroid) => {
+      if (asteroid.id !== id) {
+        acc.push(asteroid);
+      }
+      return acc;
+    }, []);
   }
 }

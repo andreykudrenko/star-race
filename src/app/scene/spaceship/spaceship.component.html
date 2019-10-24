@@ -5,5 +5,6 @@
      [style.bottom]="spaceship.positionY + 'px'" >
   <img class="spaceship__fire"
        *ngIf="spaceship.isDamaged"
-       src="https://storage.googleapis.com/multi-static-content/previews/artage-io-thumb-f6e7f7656b189dfc0dcabe81e975555f.png">
+       src="/assets/imgs/fire.png">
+  <app-blaster *ngFor="let blaster of fireBlaster" [blaster]="blaster"></app-blaster>
 </div>

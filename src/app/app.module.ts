@@ -20,6 +20,8 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptorService} from "./main-menu/auth/auth-interceptor.service";
 import {AuthGuard} from "./main-menu/auth/auth.guard";
 import {ScoreResolverService} from "./scene/score/score-resolver.service";
+import {BlasterComponent} from "./scene/spaceship/blaster/blaster.component";
+import {BlasterService} from "./scene/spaceship/blaster/blaster.service";
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import {ScoreResolverService} from "./scene/score/score-resolver.service";
     ScoreComponent,
     HomeComponent,
     MainMenuComponent,
-    AuthComponent
+    AuthComponent,
+    BlasterComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import {ScoreResolverService} from "./scene/score/score-resolver.service";
     AuthService,
     AuthGuard,
     ScoreResolverService,
+    BlasterService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent]
