@@ -56,7 +56,7 @@ export class SceneComponent implements OnInit, OnDestroy {
     this.isGameOver = false;
     this.interval = setInterval(() => {
       this.bgPosition += 1;
-      this.scoreService.setScore(this.bgPosition);
+      this.scoreService.runCountScore();
       },50);
   }
 

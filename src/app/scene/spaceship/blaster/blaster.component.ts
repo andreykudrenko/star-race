@@ -13,13 +13,11 @@ export class BlasterComponent implements OnInit, OnDestroy {
   @Input() blaster: Blaster;
   blasterInterval: Subscription;
 
-
   constructor(
     private sceneService: SceneService,
     private blasterService: BlasterService) {}
 
   ngOnInit() {
-    console.log(this.blaster);
     this.blasterInterval = interval(10).subscribe(() => {
       this.blaster.x += 5;
       const sceneWidth = this.sceneService.getSceneSize().width;

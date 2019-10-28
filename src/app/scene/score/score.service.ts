@@ -11,10 +11,21 @@ export class ScoreService {
 
   constructor(private http: HttpClient) {}
 
+  runCountScore() {
+    this.score++;
+    this.scoreChanges.next(this.score);
+  }
+
+  addScore(score) {
+    this.score += score;
+    this.scoreChanges.next(this.score);
+  }
+
   setScore(newScore) {
     this.score = newScore;
     this.scoreChanges.next(newScore);
   }
+
   getScore(): number {
     return this.score;
   }

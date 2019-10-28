@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
-import {Coords} from "./asteroids-generator/asteroid/asteroid.component";
 import {Blaster} from "./spaceship/blaster/blaster.model";
 import {SpaceshipService} from "./spaceship/spaceship.service";
 import {BlasterService} from "./spaceship/blaster/blaster.service";
 import {SceneService} from "./scene.service";
 import {Asteroid} from "./asteroids-generator/asteroid/asteroid.model";
 import {AsteroidService} from "./asteroids-generator/asteroid.service";
+import {ScoreService} from "./score/score.service";
 
 
 interface ElementPosition {
@@ -21,16 +21,13 @@ export class PhysicsService {
     private spaceshipService: SpaceshipService,
     private blasterService: BlasterService,
     private sceneService: SceneService,
+    private scoreService: ScoreService,
     private asteroidService: AsteroidService,
   ) {}
 
   checkIfAsteroidHitsSpaceship(asteroid: Asteroid) {
     const scene = this.sceneService.getSceneSize();
     const blastersPos = this.blasterService.getBlasters();
-    // this.blasterService.blasterChangesEvent.subscribe(blaster => {
-    //   blastersPos = blaster;
-    // });
-
     const spaceshipCoords = this.spaceshipService.getSpaceshipCoords();
     const spaceshipSize = this.spaceshipService.getSpaceshipSize();
 
@@ -73,7 +70,7 @@ export class PhysicsService {
         if (this.checkIntersectionOfElements(blasterCoords, asteroidCoords)) {
           this.asteroidService.deleteAsteroid(asteroid.id);
           this.blasterService.deleteBlaster(blaster.id);
-          // this.blastersPos = this.blasterService.getBlasters();
+          this.scoreService.addScore(asteroid.size);
         }
       });
     }

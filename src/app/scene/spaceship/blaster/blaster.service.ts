@@ -34,7 +34,8 @@ export class BlasterService {
     this.blasterChangesEvent.next(this.blasters);
   }
 
-  firedNewBlaster(blaster: Blaster) {
-    console.log(blaster);
+  clearBlasters() {
+    this.blasters = [];
+    this.blasterChangesEvent.next(this.blasters);
   }
 }

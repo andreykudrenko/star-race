@@ -1,11 +1,7 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
-import {SpaceshipService} from "../../spaceship/spaceship.service";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Asteroid} from "./asteroid.model";
-import {Spaceship} from "../../spaceship/spaceship.model";
 import {GameStatus, Scene, SceneService} from "../../scene.service";
 import {interval, Subscription} from "rxjs";
-import {BlasterService} from "../../spaceship/blaster/blaster.service";
-import {Blaster} from "../../spaceship/blaster/blaster.model";
 import {PhysicsService} from "../../physics.service";
 import {AsteroidService} from "../asteroid.service";
 

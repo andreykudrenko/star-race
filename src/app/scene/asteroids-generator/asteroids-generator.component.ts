@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {GameStatus, SceneService} from "../scene.service";
 import {interval, Subscription} from "rxjs";
 import {AsteroidService} from "./asteroid.service";
@@ -12,10 +12,11 @@ interface AsteroidEl {
   templateUrl: './asteroids-generator.component.html',
   styleUrls: ['./asteroids-generator.component.scss']
 })
-export class AsteroidsGeneratorComponent implements OnInit {
+export class AsteroidsGeneratorComponent implements OnInit, OnDestroy {
   asteroids: AsteroidEl[] = [];
   index: number = 0;
   intervalGeneratationSub: Subscription;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private sceneService: SceneService,
@@ -23,19 +24,20 @@ export class AsteroidsGeneratorComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.sceneService.gameStatusChanges.subscribe(status => {
+    const gameStatusSub = this.sceneService.gameStatusChanges.subscribe(status => {
       if (status === GameStatus.Run) {
         this.startGenerateAsteroids();
       } else {
         this.stopGenerateAsteroids();
       }
     });
-    this.sceneService.gameRestart.subscribe(() => {
+    const restartGameSub = this.sceneService.gameRestart.subscribe(() => {
       this.asteroids = [];
     });
-    this.asteroidService.deleteAsteroidEvent.subscribe((id: number) => {
+    const asteroidSub = this.asteroidService.deleteAsteroidEvent.subscribe((id: number) => {
       this.deleteAsteroid(id);
-    })
+    });
+    this.subscriptions = [gameStatusSub, restartGameSub, asteroidSub];
   }
 
   startGenerateAsteroids() {
@@ -57,5 +59,11 @@ export class AsteroidsGeneratorComponent implements OnInit {
       }
       return acc;
     }, []);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    })
   }
 }
