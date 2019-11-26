@@ -23,7 +23,7 @@ import {ScoreResolverService} from "./scene/score/score-resolver.service";
 import {BlasterComponent} from "./scene/spaceship/blaster/blaster.component";
 import {BlasterService} from "./scene/spaceship/blaster/blaster.service";
 import {PhysicsService} from "./scene/physics.service";
-import {AsteroidService} from "./scene/asteroids-generator/asteroid.service";
+import {AsteroidService} from "./scene/asteroids-generator/asteroid/asteroid.service";
 
 @NgModule({
   declarations: [

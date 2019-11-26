@@ -35,6 +35,7 @@ export class SpaceshipComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sceneSize = this.sceneService.getSceneSize();
     this.initSpaceship();
     const gameStatusSub = this.sceneService.gameStatusChanges.subscribe(status => {
       this.gameStatus = status;
@@ -62,7 +63,6 @@ export class SpaceshipComponent implements OnInit, OnDestroy {
   }
 
   spaceshipControl(keyCode) {
-    this.sceneSize = this.sceneService.getSceneSize();
     if (!this.spaceship.isDamaged) {
       switch (keyCode) {
         case 'KeyD':
@@ -88,33 +88,33 @@ export class SpaceshipComponent implements OnInit, OnDestroy {
 
   onMoveRight() {
     if (this.spaceship.positionX >= this.sceneSize.width - this.spaceship.size) {
-      this.spaceship.positionX = this.sceneSize.width - this.spaceship.size;
+      this.spaceship.changePositionX(this.sceneSize.width - this.spaceship.size);
     } else {
-      this.spaceship.positionX += this.spaceship.movingParam;
+      this.spaceship.changePositionX(this.spaceship.positionX + this.spaceship.movingParam);
     }
   }
 
   onMoveLeft() {
     if (this.spaceship.positionX <= 0) {
-      this.spaceship.positionX = 0;
+      this.spaceship.changePositionX(0);
     } else {
-      this.spaceship.positionX -= this.spaceship.movingParam;
+      this.spaceship.changePositionX(this.spaceship.positionX - this.spaceship.movingParam);
     }
   }
 
   onMoveTop() {
     if (this.spaceship.positionY >= this.sceneSize.height - this.spaceship.size) {
-      this.spaceship.positionY = this.sceneSize.height - this.spaceship.size;
+      this.spaceship.changePositionY(this.sceneSize.height - this.spaceship.size);
     } else {
-      this.spaceship.positionY += this.spaceship.movingParam;
+      this.spaceship.changePositionY(this.spaceship.positionY + this.spaceship.movingParam);
     }
   }
 
   onMoveBottom() {
     if (this.spaceship.positionY <= 0) {
-      this.spaceship.positionY = 0;
+      this.spaceship.changePositionY(0);
     } else {
-      this.spaceship.positionY -= this.spaceship.movingParam;
+      this.spaceship.changePositionY(this.spaceship.positionY - this.spaceship.movingParam);
     }
   }
 

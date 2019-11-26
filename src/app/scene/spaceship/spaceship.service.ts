@@ -1,23 +1,15 @@
 import {Spaceship} from "./spaceship.model";
-import {SceneService} from "../scene.service";
-import {Coords} from "../asteroids-generator/asteroid/asteroid.component";
+import {Coords} from "../scene.component";
 
 export class SpaceshipService {
   spaceship: Spaceship;
 
-  constructor(private sceneService: SceneService) {}
-
   setDamage() {
-    this.spaceship.isDamaged = true;
-    this.sceneService.gameOver();
+    this.spaceship.setDamage();
   }
 
   setSpaceship(spaceship: Spaceship) {
     this.spaceship = spaceship;
-  }
-
-  getSpaceship() {
-    return this.spaceship;
   }
 
   getSpaceshipCoords(): Coords {

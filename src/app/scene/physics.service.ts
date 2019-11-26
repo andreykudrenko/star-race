@@ -4,8 +4,9 @@ import {SpaceshipService} from "./spaceship/spaceship.service";
 import {BlasterService} from "./spaceship/blaster/blaster.service";
 import {SceneService} from "./scene.service";
 import {Asteroid} from "./asteroids-generator/asteroid/asteroid.model";
-import {AsteroidService} from "./asteroids-generator/asteroid.service";
+import {AsteroidService} from "./asteroids-generator/asteroid/asteroid.service";
 import {ScoreService} from "./score/score.service";
+import {Subscription} from "rxjs";
 
 
 interface ElementPosition {
@@ -17,6 +18,8 @@ interface ElementPosition {
 
 @Injectable()
 export class PhysicsService {
+  asteroidChangesSub: Subscription;
+
   constructor(
     private spaceshipService: SpaceshipService,
     private blasterService: BlasterService,
@@ -24,6 +27,18 @@ export class PhysicsService {
     private scoreService: ScoreService,
     private asteroidService: AsteroidService,
   ) {}
+
+  initGamePhysics() {
+    this.asteroidChangesSub = this.asteroidService.asteroidsChanges.subscribe((asteroids: Asteroid[]) => {
+      asteroids.forEach(asteroid => {
+        this.checkIfAsteroidHitsSpaceship(asteroid);
+      })
+    });
+  }
+
+  destroyGamePhysics() {
+    this.asteroidChangesSub.unsubscribe();
+  }
 
   checkIfAsteroidHitsSpaceship(asteroid: Asteroid) {
     const scene = this.sceneService.getSceneSize();
@@ -82,6 +97,7 @@ export class PhysicsService {
       && this.spaceshipService.getSpaceshipStatus() === false) {
       console.log(asteroidCoords);
       this.spaceshipService.setDamage();
+      this.sceneService.gameOver();
     }
   }
 

@@ -2,6 +2,12 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {GameStatus, SceneService} from "./scene.service";
 import {Subscription} from "rxjs";
 import {ScoreService} from "./score/score.service";
+import {PhysicsService} from "./physics.service";
+
+export interface Coords {
+  x: number;
+  y: number;
+}
 
 @Component({
   selector: 'app-scene',
@@ -16,9 +22,13 @@ export class SceneComponent implements OnInit, OnDestroy {
   score: number = 0;
   isTutorialShown = true;
 
-  constructor(private sceneService: SceneService, private scoreService: ScoreService) {}
+  constructor(
+    private sceneService: SceneService,
+    private physicsService: PhysicsService,
+    private scoreService: ScoreService) {}
 
   ngOnInit() {
+    this.physicsService.initGamePhysics();
     this.gameStatusSub = this.sceneService.gameStatusChanges.subscribe((status: GameStatus) => {
       this.checkStatusGame(status);
     });
@@ -78,5 +88,6 @@ export class SceneComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.scoreService.setScore(0);
     this.gameStatusSub.unsubscribe();
+    this.physicsService.destroyGamePhysics();
   }
 }

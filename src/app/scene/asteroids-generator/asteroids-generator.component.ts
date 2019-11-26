@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {GameStatus, SceneService} from "../scene.service";
 import {interval, Subscription} from "rxjs";
-import {AsteroidService} from "./asteroid.service";
+import {AsteroidService} from "./asteroid/asteroid.service";
 
 interface AsteroidEl {
   id: number;
@@ -33,6 +33,7 @@ export class AsteroidsGeneratorComponent implements OnInit, OnDestroy {
     });
     const restartGameSub = this.sceneService.gameRestart.subscribe(() => {
       this.asteroids = [];
+      this.asteroidService.clearAsteroids();
     });
     const asteroidSub = this.asteroidService.deleteAsteroidEvent.subscribe((id: number) => {
       this.deleteAsteroid(id);

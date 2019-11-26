@@ -11,4 +11,16 @@ export class Spaceship {
     this.movingParam = movingParam;
     this.size = size;
   }
+
+  setDamage() {
+    this.isDamaged = true;
+  }
+
+  changePositionX(x: number) {
+    this.positionX = x;
+  }
+
+  changePositionY(y: number) {
+    this.positionY = y;
+  }
 }

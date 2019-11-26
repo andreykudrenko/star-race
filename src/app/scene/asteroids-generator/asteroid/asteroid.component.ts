@@ -2,13 +2,8 @@ import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Asteroid} from "./asteroid.model";
 import {GameStatus, Scene, SceneService} from "../../scene.service";
 import {interval, Subscription} from "rxjs";
-import {PhysicsService} from "../../physics.service";
-import {AsteroidService} from "../asteroid.service";
-
-export interface Coords {
-  x: number;
-  y: number;
-}
+import {AsteroidService} from "./asteroid.service";
+import {Coords} from "../../scene.component";
 
 @Component({
   selector: 'app-asteroid',
@@ -18,12 +13,7 @@ export interface Coords {
 export class AsteroidComponent implements OnInit, OnDestroy {
   @Input() id;
   scene: Scene;
-  asteroid: Asteroid = {
-    id: this.id,
-    positionX: 0,
-    positionY: 0,
-    size: 0
-  };
+  asteroid: Asteroid;
   startPos: Coords;
   intervalMotionSub: Subscription;
   sceneSub: Subscription;
@@ -31,7 +21,6 @@ export class AsteroidComponent implements OnInit, OnDestroy {
   constructor(
     private asteroidService: AsteroidService,
     private sceneService: SceneService,
-    private physicsService: PhysicsService,
   ) {}
 
   ngOnInit() {
@@ -53,9 +42,10 @@ export class AsteroidComponent implements OnInit, OnDestroy {
 
   initAsteroid() {
     const sizeLevel = this.randomMinMaxInteger(2,4);
-    this.startPos = this.getAsteroidPosition();
+    this.startPos = this.getStartAsteroidPosition();
     const size = sizeLevel * 15;
     this.asteroid = new Asteroid(this.id, this.startPos.x, this.startPos.y, size);
+    this.asteroidService.addAsteroid(this.asteroid);
     this.startAsteroid();
   }
 
@@ -65,10 +55,9 @@ export class AsteroidComponent implements OnInit, OnDestroy {
     const moveCoord: Coords = this.generateAsteroidSpawnPlace();
 
     this.intervalMotionSub = intervalMotion.subscribe(() => {
-      this.asteroid.positionX += moveCoord.x;
-      this.asteroid.positionY += moveCoord.y;
-
-      this.physicsService.checkIfAsteroidHitsSpaceship(this.asteroid);
+      this.asteroid.changePositionX(this.asteroid.positionX + moveCoord.x);
+      this.asteroid.changePositionY(this.asteroid.positionY + moveCoord.y);
+      this.asteroidService.updateAsteroid(this.asteroid);
 
       if (this.asteroid.positionY < -200
       || this.asteroid.positionY > this.scene.height + 200
@@ -148,7 +137,7 @@ export class AsteroidComponent implements OnInit, OnDestroy {
     return Math.round(rand);
   }
 
-  private getAsteroidPosition(): Coords {
+  private getStartAsteroidPosition(): Coords {
     const side = this.randomMinMaxInteger(1,4);
     switch (side) {
       case 1:

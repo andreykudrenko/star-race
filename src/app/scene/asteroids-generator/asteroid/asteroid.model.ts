@@ -9,4 +9,12 @@ export class Asteroid {
     this.positionY = positionY;
     this.size = size;
   }
+
+  changePositionX(x: number) {
+    this.positionX = x;
+  }
+
+  changePositionY(y: number) {
+    this.positionY = y;
+  }
 }

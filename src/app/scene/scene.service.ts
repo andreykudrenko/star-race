@@ -1,9 +1,5 @@
 import {HostListener, Injectable} from "@angular/core";
 import {Subject} from "rxjs";
-import {Blaster} from "./spaceship/blaster/blaster.model";
-import {SpaceshipService} from "./spaceship/spaceship.service";
-import {Coords} from "./asteroids-generator/asteroid/asteroid.component";
-import {BlasterService} from "./spaceship/blaster/blaster.service";
 
 export enum GameStatus {
   Run = 'run',
